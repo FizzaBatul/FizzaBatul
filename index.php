@@ -1,4 +1,4 @@
- <?php
+<?php
 //Q#1:
 //Variables and Constants
 //=======================================================================================
@@ -231,8 +231,210 @@ echo "Title: " . $booktitle . "<br>";
 echo "Author: " . $bookauthor . "<br>";
 echo "Year: " . $bookyear . "<br>";
 
-echo "hell";
+//=======================================================================================
+//Q#9:
+//HTML with PHP
+//Create an HTML form to add a new book. The form should collect the book's title, author, genre, and publication year.
+//Create an HTML form to search for books by title or author.
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $title = $_POST['title'];
+    $author = $_POST['author'];
+    $genre = $_POST['genre'];
+    $year = $_POST['year'];
+
+    echo "<h2>Book Added Successfully</h2>";
+    echo "<p><strong>Title:</strong> $title</p>";
+    echo "<p><strong>Author:</strong> $author</p>";
+    echo "<p><strong>Genre:</strong> $genre</p>";
+    echo "<p><strong>Publication Year:</strong> $year</p>";
+} else {
+    echo "Error: Form submission method not allowed.";
+}
+if ($_SERVER["REQUEST_METHOD"] == "GET") {
+    $search_query = $_GET['search_query'];
+
+    $Books = array(
+        array(
+            "Title" => "PHP",
+            "Author" => "W Jason Gilmore",
+            "Year" => 2003
+        ),
+        array(
+            "Title" => "Javascript",
+            "Author" => "David Herman",
+            "Year" => 2000
+        )
+    );
+
+    echo "<h2>Search Results for '$search_query'</h2>";
+    echo "<ul>";
+    foreach ($Books as $book) {
+        if (stripos($book["Title"], $search_query) !== false || stripos($book["Author"], $search_query) !== false) {
+            echo "<li>";
+            echo "Title: " . $book["Title"] . "<br>";
+            echo "Author: " . $book["Author"] . "<br>";
+            echo "Year: " . $book["Year"] . "<br>";
+            echo "</li>";
+        }
+    }
+    echo "</ul>";
+} else {
+    echo "Error: Form submission method not allowed.";
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['search_query'])) {
+    $search_query = $_GET['search_query'];
+
+    $Books = array(
+        array(
+            "Title" => "cs",
+            "Author" => "W Jason Gilmore",
+            "Year" => 2003
+        ),
+        array(
+            "Title" => "Javascript",
+            "Author" => "David Herman",
+            "Year" => 2000
+        )
+    );
+
+    echo "<h2>Search Results for '$search_query'</h2>";
+    echo "<ul>";
+    $found = false;
+    foreach ($Books as $Books) {
+        if (stripos($Books["Title"], $search_query) !== false || stripos($Books["Author"], $search_query) !== false) {
+            echo "<li>";
+            echo "Title: " . $Books["Title"] . "<br>";
+            echo "Author: " . $Books["Author"] . "<br>";
+            echo "Year: " . $Books["Year"] . "<br>";
+            echo "</li>";
+            $found = true;
+        }
+    }
+    if (!$found) {
+        echo "<li>No books found for the search term '$search_query'.</li>";
+    }
+    echo "</ul>";
+}
+
+//=======================================================================================
+//Q#10:
+//display errors in php
+//Implement error handling to display errors when the form is submitted with missing or incorrect data.
+//Ensure that user-friendly error messages are displayed.
+
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['search_query'])) {
+    $search_query = trim($_GET['search_query']);
+    $error_message = "";
+
+    // Validate input
+    if (empty($search_query)) {
+        $error_message = "Search query cannot be empty. Please enter a title or author to search.";
+    } elseif (!preg_match("/^[a-zA-Z0-9\s]+$/", $search_query)) {
+        $error_message = "Search query contains invalid characters. Please use only letters, numbers, and spaces.";
+    }
+
+    // Display error message if any
+    if (!empty($error_message)) {
+        echo "<p style='color: red;'>$error_message</p>";
+    } else {
+        $Books = array(
+            array(
+                "Title" => "PHP",
+                "Author" => "W Jason Gilmore",
+                "Year" => 2003
+            ),
+            array(
+                "Title" => "Javascript",
+                "Author" => "David Herman",
+                "Year" => 2000
+            )
+        );
+
+        echo "<h2>Search Results for '$search_query'</h2>";
+        echo "<ul>";
+        $found = false;
+        foreach ($Books as $book) {
+            if (stripos($book["Title"], $search_query) !== false || stripos($book["Author"], $search_query) !== false) {
+                echo "<li>";
+                echo "Title: " . $book["Title"] . "<br>";
+                echo "Author: " . $book["Author"] . "<br>";
+                echo "Year: " . $book["Year"] . "<br>";
+                echo "</li>";
+                $found = true;
+            }
+        }
+        if (!$found) {
+            echo "<li>No books found for the search term '$search_query'.</li>";
+        }
+        echo "</ul>";
+    }
+}
 
 ?>
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Book</title>
+</head>
+<body>
+    <h2>Add a New Book</h2>
+    <form action="add_book.php" method="post">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title" required><br><br>
+
+        <label for="author">Author:</label><br>
+        <input type="text" id="author" name="author" required><br><br>
+
+        <label for="genre">Genre:</label><br>
+        <input type="text" id="genre" name="genre" required><br><br>
+
+        <label for="year">Publication Year:</label><br>
+        <input type="number" id="year" name="year" required><br><br>
+
+        <input type="submit" value="Add Book">
+    </form>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Books</title>
+</head>
+<body>
+    <h2>Search for Books</h2>
+    <form action="" method="get">
+        <label for="search">Search by Title or Author:</label><br>
+        <input type="text" id="search" name="search_query" required><br><br>
+        <input type="submit" value="Search">
+    </form>
+
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Books</title>
+</head>
+<body>
+    <h2>Search for Books</h2>
+    <form action="" method="get">
+        <label for="search">Search by Title or Author:</label><br>
+        <input type="text" id="search" name="search_query" required><br><br>
+        <input type="submit" value="Search">
+    </form>
+
+
+</body>
+</html>
