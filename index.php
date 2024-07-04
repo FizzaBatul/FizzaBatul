@@ -6,7 +6,7 @@
 echo "Q1 <br>";
 $library_name="Kiet Library";
 $library_address="123 street main, Karachi";
-$library_books="200";
+$library_books=200;
 
 //Define constants for library open and close times.
 const LIB_OPEN_TIMING = "9:00 AM";
